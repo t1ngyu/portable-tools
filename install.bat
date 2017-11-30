@@ -1,25 +1,28 @@
-@echo off
+@echo on
 set DOWNLOAD_DIR=%USERPROFILE%\Downloads
 set DST_DIR=%USERPROFILE%\Desktop\tools
 set REPO=https://github.com/t1ngyu/portable-tools.git
 set WINRAR="C:\Program Files (x86)\WinRAR\winrar.exe"
 set CHROME="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-
+set _PATH=
 
 if exist "%DST_DIR%" (
-    del /s /q "%DST_DIR%"
+    rd /s /q "%DST_DIR%"
+)
+pause
+
+
+if not exist "%DOWNLOAD_DIR%\PortableGit-2.15.0-64-bit.7z.exe" (
+    echo Download PortableGit-2.15.0-64-bit.7z.exe
+    call :download PortableGit-2.15.0-64-bit.7z.exe
 )
 
 
-echo Download PortableGit-2.15.0-64-bit.7z.exe
-call :download PortableGit-2.15.0-64-bit.7z.exe
-
-
 echo Install git
-%WINRAR% x "%DOWNLOAD_DIR%\PortableGit-2.15.0-64-bit.7z.exe" "%DST_DIR%\git\"
+call :uncompress "%DOWNLOAD_DIR%\PortableGit-2.15.0-64-bit.7z.exe" "%DST_DIR%\git\"
 call :makelink Git "%DST_DIR%\git\git-cmd.exe"
-setx GIT_PATH "%DST_DIR%\git\bin"
-setx PATH "%PATH%;%%GIT_PATH%%"
+call :add_env GIT_PATH "%DST_DIR%\git\bin"
+call :add_to_path %%GIT_PATH%%
 
 
 echo Clone other tools
@@ -27,35 +30,53 @@ echo Clone other tools
 
 
 echo Install 7z
-%WINRAR% x "%DST_DIR%\repo\7z1604-extra.7z" "%DST_DIR%\7z\"
+call :uncompress "%DST_DIR%\repo\7z1604-extra.7z" "%DST_DIR%\7z\"
 
 
 echo Install Notepad++
-%WINRAR% x "%DST_DIR%\repo\npp.7.5.1.bin.zip" "%DST_DIR%\notepad\"
+call :uncompress "%DST_DIR%\repo\npp.7.5.1.bin.zip" "%DST_DIR%\notepad\"
 call :makelink Notepad++ "%DST_DIR%\notepad\notepad++.exe"
 
 
 echo Install python
-%WINRAR% x "%DST_DIR%\repo\python-3.7.0a2-embed-win32.zip" "%DST_DIR%\python\"
-setx PYTHON_PATH "%DST_DIR%\python"
-setx PATH "%PATH%;%%PYTHON_PATH%%"
+call :uncompress "%DST_DIR%\repo\python-3.7.0a2-embed-win32.7z" "%DST_DIR%\python\"
+call :add_env PYTHON_PATH "%DST_DIR%\python"
+call :add_to_path %%PYTHON_PATH%%
+call :add_to_path %%PYTHON_PATH%%\Scripts
 
 
 echo Install MobaXterm
-%WINRAR% x "%DST_DIR%\repo\MobaXterm_Portable_v10.4.zip" "%DST_DIR%\MobaXterm\"
+call :uncompress "%DST_DIR%\repo\MobaXterm_Portable_v10.4.zip" "%DST_DIR%\MobaXterm\"
 call :makelink MobaXterm "%DST_DIR%\MobaXterm\MobaXterm_Personal_10.4.exe"
 
 
 echo Install VSCode
-%WINRAR% x "%DST_DIR%\repo\VSCode-win32-ia32-1.18.1.zip" "%DST_DIR%\vscode\"
+call :uncompress "%DST_DIR%\repo\VSCode-win32-x64-1.18.1.7z" "%DST_DIR%\vscode\"
 call :makelink VSCode "%DST_DIR%\vscode\code.exe"
 
 
+setx PATH "%PATH%%_PATH%"
+
 echo Done!
+pause
 goto :EOF
 
 
 :: Functions
+:uncompress
+    %WINRAR% x %1 %2
+goto :EOF
+
+
+:add_env
+    setx %1 %2
+goto :EOF
+
+
+:add_to_path
+    set _PATH=%_PATH%;%1
+goto :EOF
+
 
 :makelink
     (echo Set WshShell=CreateObject("WScript.Shell"^)
