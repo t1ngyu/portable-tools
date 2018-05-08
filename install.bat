@@ -52,6 +52,10 @@ call :uncompress "%DST_DIR%\portable-tools-master\VSCode-win32-x64-1.18.1.7z" "%
 call :makelink VSCode "%DST_DIR%\vscode\code.exe"
 call :add_to_path "%DST_DIR%\vscode"
 
+echo Install PuTTy
+call :uncompress "%DST_DIR%\portable-tools-master\putty.zip" "%DST_DIR%\putty\"
+call :makelink PuTTy "%DST_DIR%\putty\putty.exe"
+
 
 setx PATH "%PATH%%_PATH:~1,-1%"
 
