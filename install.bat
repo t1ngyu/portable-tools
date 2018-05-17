@@ -19,6 +19,11 @@ if not exist "%DOWNLOAD_DIR%\portable-tools-master.zip" (
 call :uncompress "%DOWNLOAD_DIR%\portable-tools-master.zip" "%DST_DIR%\"
 
 
+echo Install PuTTy
+call :uncompress "%DST_DIR%\portable-tools-master\portable_putty_070_0.12.0.zip" "%DST_DIR%\putty\"
+call :makelink PuTTy "%DST_DIR%\putty\putty.exe"
+
+
 echo Install git
 call :uncompress "%DST_DIR%\portable-tools-master\PortableGit-2.15.0-64-bit.7z.exe" "%DST_DIR%\git\"
 call :makelink Git "%DST_DIR%\git\git-cmd.exe"
@@ -51,11 +56,6 @@ echo Install VSCode
 call :uncompress "%DST_DIR%\portable-tools-master\VSCode-win32-x64-1.18.1.7z" "%DST_DIR%\vscode\"
 call :makelink VSCode "%DST_DIR%\vscode\code.exe"
 call :add_to_path "%DST_DIR%\vscode"
-
-echo Install PuTTy
-call :uncompress "%DST_DIR%\portable-tools-master\putty.zip" "%DST_DIR%\putty\"
-call :makelink PuTTy "%DST_DIR%\putty\putty.exe"
-
 
 setx PATH "%PATH%%_PATH:~1,-1%"
 
